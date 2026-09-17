@@ -1,0 +1,194 @@
+<Window x:Class="PhoneAccounting.App.Views.ProductCardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:inf="clr-namespace:PhoneAccounting.App.Infrastructure"
+        Title="بطاقة المنتج"
+        Width="760" Height="660"
+        MinWidth="680" MinHeight="580"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        FlowDirection="RightToLeft"
+        Background="{StaticResource BgBrush}"
+        SourceInitialized="Window_SourceInitialized">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6"
+                      GlassFrameThickness="0" CornerRadius="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <inf:InverseBooleanConverter x:Key="InverseBoolean"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===== الترويسة ===== -->
+        <Border Grid.Row="0" Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1"
+                Padding="22,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="{Binding FormTitle}" FontFamily="{StaticResource AppFont}"
+                               FontSize="18" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <TextBlock Text="فئة المنتج · النوع · الأسعار · الحالة" FontFamily="{StaticResource AppFont}"
+                               FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,6,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="&#xE711;" Style="{StaticResource IconButton}"
+                        FontFamily="Segoe MDL2 Assets" FontSize="13" Click="Cancel_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== النموذج ===== -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                      Padding="22,20" HorizontalScrollBarVisibility="Disabled">
+            <Border Style="{StaticResource AppleGlassCard}" Padding="24">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.Resources>
+                        <Style x:Key="FieldLabel" TargetType="TextBlock">
+                            <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="0,0,12,12"/>
+                        </Style>
+                        <Style x:Key="FieldBox" TargetType="Control">
+                            <Setter Property="Margin" Value="0,0,0,12"/>
+                            <Setter Property="Height" Value="38"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="اسم المنتج *" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="الاسم الإنجليزي" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding EnglishName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="التصنيف / البراند *" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox Grid.Row="2" Grid.Column="1" Style="{StaticResource ModernComboBox}"
+                              ItemsSource="{Binding FormCategories}"
+                              SelectedItem="{Binding FormCategory}"
+                              DisplayMemberPath="Display"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="النوع" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox Grid.Row="3" Grid.Column="1" Style="{StaticResource ModernComboBox}"
+                              ItemsSource="{Binding SubTypes}"
+                              SelectedItem="{Binding FormSubType}"/>
+
+                    <TextBlock Grid.Row="4" Grid.Column="0" Text="الباركود" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding Barcode, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="5" Grid.Column="0" Text="IMEI (اختياري)" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="5" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding Imei, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="6" Grid.Column="0" Text="سعر الشراء" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="6" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding BuyPrice, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="7" Grid.Column="0" Text="سعر البيع *" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="7" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding SellPrice, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="8" Grid.Column="0" Text="الحد الأدنى للمخزون" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="8" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding MinStock, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Grid.Row="9" Grid.Column="0" Text="الكمية بالمخزون (تعدَّل من نقطة البيع)" Style="{StaticResource FieldLabel}"/>
+                    <TextBox Grid.Row="9" Grid.Column="1" Style="{StaticResource ModernTextBox}"
+                             Text="{Binding Stock, Mode=OneWay}" IsReadOnly="True"
+                             IsEnabled="False" Opacity="0.85"/>
+
+                    <TextBlock Grid.Row="10" Grid.Column="0" Text="الجهاز" Style="{StaticResource FieldLabel}"/>
+                    <ComboBox Grid.Row="10" Grid.Column="1" Style="{StaticResource ModernComboBox}"
+                              ItemsSource="{Binding Devices}"
+                              SelectedItem="{Binding SelectedDevice}"
+                              DisplayMemberPath="Display"/>
+
+                    <StackPanel Grid.Row="11" Grid.Column="1" Orientation="Horizontal" Margin="0,4,0,0">
+                        <CheckBox Content="مُستعمَل" IsChecked="{Binding FormIsUsed}"
+                                  FontFamily="{StaticResource AppFont}" FontSize="13"
+                                  Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <CheckBox Content="مُفعّل (يظهر بالبيع)" IsChecked="{Binding FormIsActive}" Margin="24,0,0,0"
+                                  FontFamily="{StaticResource AppFont}" FontSize="13"
+                                  Foreground="{StaticResource TextPrimaryBrush}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </ScrollViewer>
+
+        <!-- ===== الشريط السفلي ===== -->
+        <Border Grid.Row="2" Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0"
+                Padding="22,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" VerticalAlignment="Center"
+                           Text="{Binding ResultMessage}"
+                           FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                           TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                           Margin="0,0,12,0">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsResultError}" Value="True">
+                                    <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="حذف" Style="{StaticResource AppleGhostButton}" MinWidth="96" Height="36"
+                            Click="Delete_Click">
+                        <Button.Foreground>
+                            <StaticResource ResourceKey="DangerBrush"/>
+                        </Button.Foreground>
+                    </Button>
+                    <Button Content="حفظ" Style="{StaticResource ApplePrimaryButton}" MinWidth="112" Height="36"
+                            Margin="10,0,0,0" Click="Save_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

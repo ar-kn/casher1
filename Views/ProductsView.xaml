@@ -1,0 +1,458 @@
+<UserControl x:Class="PhoneAccounting.App.Views.ProductsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:inf="clr-namespace:PhoneAccounting.App.Infrastructure"
+             xmlns:vm="clr-namespace:PhoneAccounting.App.ViewModels"
+             FlowDirection="RightToLeft"
+             Background="{StaticResource GlassBgBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="28" MaxWidth="1500">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ===== الترويسة ===== -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="إدارة المخزون والمستودعات" FontFamily="{StaticResource AppFont}"
+                               FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <Border Background="{StaticResource GlassSurfaceContainerHighBrush}" CornerRadius="10"
+                            Padding="10,4" Margin="12,0,0,0" VerticalAlignment="Center">
+                        <TextBlock FontFamily="{StaticResource AppFont}" FontSize="11.5"
+                                   Foreground="{StaticResource TextSecondaryBrush}">
+                            <Run Text="{Binding OverallProductCount}"/><Run Text=" صنف نشط"/>
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Style="{StaticResource AppleGhostButton}" Height="38"
+                            Command="{Binding ExportProductsCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE896;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="تصدير" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource ApplePrimaryButton}" Height="38" Margin="10,0,0,0"
+                            Command="{Binding StartAddCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="إضافة صنف جديد" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- رسالة تصدير -->
+            <TextBlock Text="{Binding ExportMessage}" FontFamily="{StaticResource AppFont}" FontSize="11.5"
+                       Foreground="{Binding ExportIsError, Converter={StaticResource ResultColor}}"
+                       HorizontalAlignment="Left" Margin="2,10,0,0"
+                       Visibility="{Binding ExportMessage, Converter={StaticResource StringToVisibility}}"/>
+
+            <!-- ===== بطاقات ملخص KPI ===== -->
+            <Grid Grid.Row="1" Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource AppleGlassCard}" Padding="20" Margin="0,0,10,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="الأصناف المتوفرة بكثرة" FontFamily="{StaticResource AppFont}"
+                                       FontSize="12" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Text="{Binding AvailableCount}" FontFamily="{StaticResource AppFont}"
+                                       FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+                            <TextBlock FontFamily="{StaticResource AppFont}" FontSize="11" Margin="0,4,0,0"
+                                       Foreground="{StaticResource SuccessBrush}">
+                                <Run Text="&#x2713; " FontFamily="Segoe UI"/>
+                                <Run Text="{Binding AvailablePercentText, Mode=OneWay}"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="46" Height="46" CornerRadius="14"
+                                Background="{StaticResource GlassTertiaryTintBrush}" VerticalAlignment="Top">
+                            <TextBlock Text="&#xE7B8;" Style="{StaticResource CenteredGlyphIcon}" FontSize="20"
+                                       Foreground="{StaticResource SuccessBrush}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource AppleGlassCard}" Padding="20" Margin="6,0,6,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="تنبيه المخزون المنخفض" FontFamily="{StaticResource AppFont}"
+                                       FontSize="12" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="{Binding LowStockCount}" FontFamily="{StaticResource AppFont}"
+                                           FontSize="26" FontWeight="Bold" Foreground="#D97706"/>
+                                <TextBlock Text=" صنف متبقي" FontFamily="{StaticResource AppFont}" FontSize="12"
+                                           Foreground="{StaticResource GlassOutlineBrush}" VerticalAlignment="Bottom" Margin="4,0,0,4"/>
+                            </StackPanel>
+                            <TextBlock Text="تحت حد إعادة الطلب الآمن" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11" Foreground="#D97706" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="46" Height="46" CornerRadius="14"
+                                Background="#FEF3C7" VerticalAlignment="Top">
+                            <TextBlock Text="&#xE814;" Style="{StaticResource CenteredGlyphIcon}" FontSize="20"
+                                       Foreground="#D97706"/>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource AppleGlassCard}" Padding="20" Margin="10,0,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="أصناف نفدت بالكامل" FontFamily="{StaticResource AppFont}"
+                                       FontSize="12" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Text="{Binding OutOfStockCount}" FontFamily="{StaticResource AppFont}"
+                                       FontSize="26" FontWeight="Bold" Foreground="{StaticResource DangerBrush}" Margin="0,4,0,0"/>
+                            <TextBlock Text="يتطلب طلب توريد فوري" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11" Foreground="{StaticResource DangerBrush}" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="46" Height="46" CornerRadius="14"
+                                Background="{StaticResource GlassErrorTintBrush}" VerticalAlignment="Top">
+                            <TextBlock Text="&#xE711;" Style="{StaticResource CenteredGlyphIcon}" FontSize="20"
+                                       Foreground="{StaticResource DangerBrush}"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ===== شريط الفلاتر ===== -->
+            <Border Grid.Row="2" Style="{StaticResource AppleGlassCard}" Margin="0,16,0,0" Padding="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.2*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="{StaticResource CardBrush}" CornerRadius="12"
+                            BorderBrush="{StaticResource OutlineVariantBrush}" BorderThickness="1" Margin="0,0,10,0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{StaticResource GlassOutlineBrush}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                            <TextBox Grid.Column="1" BorderThickness="0" Background="Transparent" Height="38"
+                                     Margin="8,0,12,0" VerticalContentAlignment="Center"
+                                     FontFamily="{StaticResource AppFont}" FontSize="13"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     ToolTip="تصفية بالاسم، الباركود، أو رقم IMEI"/>
+                        </Grid>
+                    </Border>
+
+                    <ComboBox Grid.Column="1" Style="{StaticResource ModernComboBox}" Height="40"
+                              ItemsSource="{Binding StatusOptions}"
+                              SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"/>
+                </Grid>
+            </Border>
+
+            <!-- ===== المحتوى: شجرة المجلدات + جدول الأصناف ===== -->
+            <Grid Grid.Row="3" Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="290"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- شجرة المجلدات -->
+                <Border Grid.Column="0" Style="{StaticResource AppleGlassCard}" Padding="0" Margin="0,0,12,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1"
+                                Padding="16,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                               Foreground="{StaticResource GlassPrimaryBrush}"/>
+                                    <TextBlock Text="المجلدات" FontFamily="{StaticResource AppFont}" FontSize="13.5"
+                                               FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="&#xE710;" Style="{StaticResource IconButton}"
+                                        Width="30" Height="30" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                        ToolTip="إضافة مجلد/براند جديد"
+                                        Command="{Binding AddBrandFolderCommand}"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- منطقة الشجرة + رسالة عالمية عند عدم وجود بيانات -->
+                        <StackPanel Grid.Row="1" Margin="8,10,8,10">
+                            <TextBlock Text="لا توجد مجلدات بعد — أضف مجلداً من زر +" FontFamily="{StaticResource AppFont}"
+                                       FontSize="12" Foreground="{StaticResource GlassOutlineBrush}" Margin="10,6"
+                                       Visibility="{Binding Folders.Count, Converter={StaticResource EmptyVisibility}}"/>
+                            <TreeView x:Name="FoldersTree" Background="Transparent" BorderThickness="0"
+                                      ItemsSource="{Binding Folders}"
+                                      Padding="4"
+                                      SelectedItemChanged="FolderTree_SelectedItemChanged"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="TreeViewItem">
+                                        <Setter Property="IsExpanded" Value="True"/>
+                                        <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Margin" Value="0,1"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource GlassSurfaceContainerBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource GlassPrimaryBrush}"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate DataType="{x:Type vm:FolderNode}" ItemsSource="{Binding Children}">
+                                        <Grid Margin="0,4,0,4" Background="Transparent">
+                                            <Grid.ContextMenu>
+                                                <ContextMenu Background="{StaticResource CardBrush}" BorderBrush="{StaticResource DividerBrush}">
+                                                    <MenuItem Header="مجلد/براند جديد"
+                                                              Command="{Binding DataContext.AddBrandFolderCommand, Source={x:Reference FoldersTree}}"/>
+                                                    <Separator/>
+                                                    <MenuItem Header="تسمية المجلد"
+                                                              Command="{Binding DataContext.RenameFolderCommand, Source={x:Reference FoldersTree}}"
+                                                              CommandParameter="{Binding}"/>
+                                                    <MenuItem Header="حذف المجلد" 
+                                                              Foreground="{StaticResource DangerBrush}"
+                                                              Command="{Binding DataContext.DeleteFolderCommand, Source={x:Reference FoldersTree}}"
+                                                              CommandParameter="{Binding}"/>
+                                                </ContextMenu>
+                                            </Grid.ContextMenu>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Icon}" FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="13" Foreground="{StaticResource GlassOutlineBrush}"/>
+                                                <TextBlock Text="{Binding Name}" FontSize="13" Margin="8,0,0,0"/>
+                                                <Border Background="{StaticResource GlassSurfaceContainerHighBrush}"
+                                                        CornerRadius="8" Padding="6,1" Margin="8,0,0,0">
+                                                    <TextBlock Text="{Binding Count}" FontSize="10.5"
+                                                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- جدول الأصناف -->
+                <Border Grid.Column="1" Style="{StaticResource AppleGlassCard}" Padding="0">
+                    <StackPanel>
+                        <!-- رؤوس الأعمدة -->
+                        <Grid Margin="22,18,22,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.1*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="0.9*"/>
+                                <ColumnDefinition Width="0.9*"/>
+                                <ColumnDefinition Width="0.7*"/>
+                                <ColumnDefinition Width="1.1*"/>
+                                <ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="0.8*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="اسم المنتج ومواصفاته" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="1" Text="التصنيف" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="2" Text="سعر الشراء" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="3" Text="سعر البيع" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="4" Text="الهامش" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="5" Text="مستوى المخزون" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="6" Text="الحالة" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                            <TextBlock Grid.Column="7" Text="إجراءات" FontFamily="{StaticResource AppFont}"
+                                       FontSize="11.5" FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"
+                                       HorizontalAlignment="Center"/>
+                        </Grid>
+
+                        <TextBlock Text="لا توجد أصناف مطابقة" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   Foreground="{StaticResource GlassOutlineBrush}" Margin="22,24"
+                                   Visibility="{Binding Products.Count, Converter={StaticResource EmptyVisibility}}"/>
+
+                        <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding Products}"
+                                      Visibility="{Binding Products.Count, Converter={StaticResource InverseEmptyVisibility}}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource GlassSurfaceContainerHighBrush}" BorderThickness="0,0,0,1"
+                                            Padding="22,10" Cursor="Hand"
+                                            MouseLeftButtonUp="ProductRow_MouseLeftButtonUp">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2.1*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="0.9*"/>
+                                                <ColumnDefinition Width="0.9*"/>
+                                                <ColumnDefinition Width="0.7*"/>
+                                                <ColumnDefinition Width="1.1*"/>
+                                                <ColumnDefinition Width="0.8*"/>
+                                                <ColumnDefinition Width="0.8*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- الاسم + أيقونة + النوع والباركود/IMEI -->
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <Border Width="38" Height="38" CornerRadius="10"
+                                                        Background="{StaticResource GlassSurfaceContainerBrush}">
+                                                    <TextBlock Text="{Binding DeviceIconGlyph}" Style="{StaticResource CenteredGlyphIcon}"
+                                                               FontSize="16" Foreground="{StaticResource GlassOutlineBrush}"/>
+                                                </Border>
+                                                <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontFamily="{StaticResource AppFont}"
+                                                               FontSize="13.5" FontWeight="SemiBold"
+                                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding SubType}" FontFamily="{StaticResource AppFont}"
+                                                                   FontSize="10.5" Foreground="{StaticResource GlassPrimaryBrush}"/>
+                                                        <TextBlock Text="{Binding Barcode}" FontFamily="Consolas" FontSize="10.5"
+                                                                   Foreground="{StaticResource GlassOutlineBrush}" Margin="6,0,0,0"/>
+                                                        <TextBlock FontFamily="Consolas" FontSize="10.5"
+                                                                   Foreground="{StaticResource GlassPrimaryBrush}"
+                                                                   Visibility="{Binding Imei, Converter={StaticResource StringToVisibility}}">
+                                                            <Run Text=" • IMEI: "/><Run Text="{Binding Imei, Mode=OneWay}"/>
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <Border Grid.Column="1" Background="{StaticResource GlassSurfaceContainerBrush}"
+                                                    CornerRadius="7" Padding="8,3" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding CategoryName}" FontFamily="{StaticResource AppFont}"
+                                                           FontSize="10.5" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="2" FontFamily="Consolas" FontSize="12.5"
+                                                       Foreground="{StaticResource GlassOutlineBrush}" VerticalAlignment="Center">
+                                                <Run Text="{Binding BuyPrice, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                                            </TextBlock>
+
+                                            <TextBlock Grid.Column="3" FontFamily="Consolas" FontSize="12.5" FontWeight="Bold"
+                                                       Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center">
+                                                <Run Text="{Binding SellPrice, StringFormat={}{0:N0}, Mode=OneWay}"/>
+                                            </TextBlock>
+
+                                            <TextBlock Grid.Column="4" FontFamily="Consolas" FontSize="12" FontWeight="Bold"
+                                                       Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center">
+                                                <Run Text="{Binding MarginPercent, StringFormat={}{0:+0.#;-0.#}%, Mode=OneWay}"/>
+                                            </TextBlock>
+
+                                            <StackPanel Grid.Column="5" VerticalAlignment="Center">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border Grid.Column="0" Height="6" CornerRadius="3"
+                                                            Background="{StaticResource GlassSurfaceContainerHighBrush}"
+                                                            VerticalAlignment="Center" Margin="0,0,8,0">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="{Binding StockBarPercent, Converter={StaticResource PercentToStar}}"/>
+                                                                <ColumnDefinition Width="{Binding StockBarPercent, Converter={StaticResource PercentToStar}, ConverterParameter=Inverse}"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <Border Grid.Column="0" CornerRadius="3"
+                                                                    Background="{Binding StatusText, Converter={StaticResource StatusToBrush}}"/>
+                                                        </Grid>
+                                                    </Border>
+                                                    <TextBlock Grid.Column="1" FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                                                               FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+                                                        <Run Text="{Binding Stock, Mode=OneWay}"/>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </StackPanel>
+
+                                            <Border Grid.Column="6" CornerRadius="8" Padding="9,4" HorizontalAlignment="Left"
+                                                    VerticalAlignment="Center"
+                                                    Background="{Binding StatusText, Converter={StaticResource StatusToTintBrush}}">
+                                                <TextBlock Text="{Binding StatusText}" FontFamily="{StaticResource AppFont}"
+                                                           FontSize="10.5" FontWeight="SemiBold"
+                                                           Foreground="{Binding StatusText, Converter={StaticResource StatusToBrush}}"/>
+                                            </Border>
+
+                                            <StackPanel Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center">
+                                                <Button Content="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                        Style="{StaticResource IconButton}" Width="30" Height="30" ToolTip="تعديل الصنف"
+                                                        Command="{Binding DataContext.OpenCardCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"/>
+                                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="13" Margin="4,0,0,0"
+                                                        Style="{StaticResource IconButton}" Width="30" Height="30" ToolTip="حذف الصنف"
+                                                        Foreground="{StaticResource DangerBrush}"
+                                                        Command="{Binding DataContext.DeleteProductCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                        CommandParameter="{Binding}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- ===== تذييل الترقيم ===== -->
+                        <Border Background="{StaticResource GlassSurfaceContainerBrush}" CornerRadius="16"
+                                Padding="22,12" Margin="14,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" FontFamily="{StaticResource AppFont}" FontSize="11.5"
+                                           Foreground="{StaticResource GlassOutlineBrush}" VerticalAlignment="Center">
+                                    <Run Text="عرض صفحة "/><Run Text="{Binding CurrentPage}" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Run Text=" من "/><Run Text="{Binding TotalPages}" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Run Text=" — إجمالي "/><Run Text="{Binding TotalFilteredCount}" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Run Text=" صنف"/>
+                                </TextBlock>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button Content="›" FontFamily="Segoe UI" FontSize="16" FontWeight="Bold"
+                                            Style="{StaticResource IconButton}" Width="32" Height="32"
+                                            Command="{Binding NextPageCommand}" ToolTip="الصفحة التالية"/>
+                                    <Button Content="‹" FontFamily="Segoe UI" FontSize="16" FontWeight="Bold" Margin="6,0,0,0"
+                                            Style="{StaticResource IconButton}" Width="32" Height="32"
+                                            Command="{Binding PreviousPageCommand}" ToolTip="الصفحة السابقة"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,187 @@
+<UserControl x:Class="PhoneAccounting.App.Views.EmployeesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:PhoneAccounting.App.Models"
+             FlowDirection="RightToLeft"
+             Background="{StaticResource BgBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="الموظفون" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="إضافة وحذف وإدارة حسابات الموظفين وصلاحياتهم"
+                       FontFamily="{StaticResource AppFont}" FontSize="14"
+                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,6,0,0"/>
+        </StackPanel>
+
+        <!-- نموذج الإضافة -->
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,20,0,0" Padding="22,20">
+            <StackPanel>
+                <TextBlock Text="إضافة موظف جديد" FontFamily="{StaticResource AppFont}"
+                           FontSize="16" FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                <Grid Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                        <TextBlock Text="الاسم الكامل" FontFamily="{StaticResource AppFont}"
+                                   FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                        <TextBox Style="{StaticResource ModernTextBox}"
+                                 Text="{Binding NewDisplayName, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                        <TextBlock Text="اسم المستخدم" FontFamily="{StaticResource AppFont}"
+                                   FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                        <TextBox Style="{StaticResource ModernTextBox}"
+                                 Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" Margin="12,0,0,0">
+                        <TextBlock Text="كلمة المرور" FontFamily="{StaticResource AppFont}"
+                                   FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                        <TextBox Style="{StaticResource ModernTextBox}"
+                                 Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Margin="12,0,0,0">
+                        <TextBlock Text="الوظيفة" FontFamily="{StaticResource AppFont}"
+                                   FontSize="12.5" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                        <ComboBox Style="{StaticResource ModernComboBox}" Width="160" Height="40"
+                                  ItemsSource="{Binding Roles}"
+                                  SelectedValue="{Binding NewRole}"
+                                  SelectedValuePath="Key"
+                                  DisplayMemberPath="Value"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                    <Button Content="إضافة الموظف" Style="{StaticResource PrimaryButton}"
+                            Command="{Binding AddEmployeeCommand}"/>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}"
+                               FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                               VerticalAlignment="Center" Margin="16,0,0,0"/>
+                    <TextBlock Text="{Binding SuccessMessage}" Foreground="{StaticResource SuccessBrush}"
+                               FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                               VerticalAlignment="Center" Margin="16,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- جدول الموظفين -->
+         <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,20,0,0" Padding="0">
+            <StackPanel>
+            <!-- ===== رؤوس الأعمدة (تسميات فقط) ===== -->
+            <Grid Margin="22,16,22,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2.2*"/>
+                    <ColumnDefinition Width="1.8*"/>
+                    <ColumnDefinition Width="1.4*"/>
+                    <ColumnDefinition Width="1.4*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1.1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="الاسم" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="1" Text="اسم المستخدم" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="2" Text="الوظيفة" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="3" Text="تاريخ الإضافة" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="4" Text="الحالة" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="5" Text="إجراء" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+            </Grid>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="0,8,0,0">
+                <ItemsControl ItemsSource="{Binding Employees}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource AppleListRowBorder}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2.2*"/>
+                                        <ColumnDefinition Width="1.8*"/>
+                                        <ColumnDefinition Width="1.4*"/>
+                                        <ColumnDefinition Width="1.4*"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="1.1*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Text="{Binding DisplayName}"
+                                               FontFamily="{StaticResource AppFont}" FontSize="13.5"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Column="1" Text="{Binding Username}"
+                                               FontFamily="{StaticResource AppFont}" FontSize="13"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Column="2" Text="{Binding RoleTitle}"
+                                               FontFamily="{StaticResource AppFont}" FontSize="13"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Column="3" Text="{Binding CreatedDate}"
+                                               FontFamily="{StaticResource AppFont}" FontSize="13"
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               VerticalAlignment="Center"/>
+
+                                    <StackPanel Grid.Column="4" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <CheckBox IsChecked="{Binding IsActive, Mode=TwoWay}"
+                                                  IsEnabled="{Binding IsAdmin, Converter={StaticResource InverseBoolean}}"
+                                                  VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding IsActive, Converter={StaticResource ActiveStatus}}"
+                                                   FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"
+                                                   Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <Button Grid.Column="5" Content="حذف" Style="{StaticResource DangerButton}"
+                                            Padding="12,6" FontSize="12"
+                                            Command="{Binding DataContext.DeleteEmployeeCommand,
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding IsAdmin, Converter={StaticResource InverseBoolean}}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <TextBlock Text="لا يوجد موظفون مطابقون"
+                       FontFamily="{StaticResource AppFont}" FontSize="13"
+                       Foreground="{StaticResource TextSecondaryBrush}" Margin="22,18"
+                       Visibility="{Binding Employees.Count, Converter={StaticResource EmptyVisibility}}"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+    </ScrollViewer>
+</UserControl>

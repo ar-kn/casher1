@@ -1,0 +1,142 @@
+<Window x:Class="PhoneAccounting.App.Views.AuditLogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="سجل العمليات"
+        Width="860" Height="600"
+        MinWidth="720" MinHeight="420"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        FlowDirection="RightToLeft"
+        Background="{StaticResource BgBrush}"
+        SourceInitialized="Window_SourceInitialized">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6"
+                      GlassFrameThickness="0" CornerRadius="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ===== الترويسة ===== -->
+        <Border Grid.Row="0" Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1"
+                Padding="22,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="سجل العمليات" FontFamily="{StaticResource AppFont}"
+                               FontSize="18" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <TextBlock Text="آخر 50 عملية في هذا الجهاز — مرجع التدقيق قبل المزامنة"
+                               FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="&#xE711;" Style="{StaticResource IconButton}"
+                        FontFamily="Segoe MDL2 Assets" FontSize="13"
+                        ToolTip="إغلاق" Click="Close_Click"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== القائمة ===== -->
+        <Grid Grid.Row="1" Margin="22,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.6*"/>
+                    <ColumnDefinition Width="1.1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="0.9*"/>
+                    <ColumnDefinition Width="0.8*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="#" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="1" Text="العملية" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="2" Text="الرقم" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="3" Text="المبلغ (د.ع)" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="4" Text="الدور" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="5" Text="الجهاز" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <TextBlock Grid.Column="6" Text="الوقت" FontFamily="{StaticResource AppFont}"
+                           FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+            </Grid>
+
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,8,0,0" Padding="0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Entries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="0,11" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="0.6*"/>
+                                            <ColumnDefinition Width="1.1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="0.9*"/>
+                                            <ColumnDefinition Width="0.8*"/>
+                                            <ColumnDefinition Width="1*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="{Binding Seq}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="12.5" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding TypeText}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding DocumentNumber}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding Amount, StringFormat={}{0:N0}}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="4" Text="{Binding RoleText}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="{Binding DeviceText}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="6" Text="{Binding When}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="12.5"
+                                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+
+            <TextBlock Grid.Row="1" Text="لا توجد عمليات مسجّلة بعد"
+                       FontFamily="{StaticResource AppFont}" FontSize="13"
+                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,20"
+                       HorizontalAlignment="Center"
+                       Visibility="{Binding Entries.Count, Converter={StaticResource EmptyVisibility}}"/>
+        </Grid>
+
+        <!-- ===== الأسفل ===== -->
+        <Border Grid.Row="2" Background="{StaticResource CardBrush}"
+                BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,1,0,0"
+                Padding="22,12">
+            <Button Content="إغلاق" Style="{StaticResource ModernButton}"
+                    HorizontalAlignment="Left" Click="Close_Click" Padding="28,8"/>
+        </Border>
+    </Grid>
+</Window>

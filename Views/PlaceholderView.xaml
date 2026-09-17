@@ -1,0 +1,23 @@
+<UserControl x:Class="PhoneAccounting.App.Views.PlaceholderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             Background="{StaticResource BgBrush}">
+    <Grid>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="420">
+            <Border Width="72" Height="72" CornerRadius="36"
+                    Background="{StaticResource CardBrush}"
+                    Effect="{StaticResource CardShadow}"
+                    HorizontalAlignment="Center">
+                <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" FontSize="30"
+                           Foreground="{StaticResource AccentBrush}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock x:Name="TitleText" Style="{StaticResource PageTitle}"
+                       TextAlignment="Center" Margin="0,22,0,0"/>
+            <TextBlock x:Name="MessageText" FontFamily="{StaticResource AppFont}"
+                       FontSize="14" Foreground="{StaticResource TextSecondaryBrush}"
+                       TextAlignment="Center" TextWrapping="Wrap" Margin="0,10,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

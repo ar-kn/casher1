@@ -1,0 +1,316 @@
+<UserControl x:Class="PhoneAccounting.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:PhoneAccounting.App.ViewModels"
+             FlowDirection="RightToLeft"
+             Background="{StaticResource BgBrush}">
+    <UserControl.DataContext>
+        <vm:SettingsViewModel/>
+    </UserControl.DataContext>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="32" MaxWidth="1100">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- الترويسة -->
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="الإعدادات" Style="{StaticResource PageTitle}"/>
+                <TextBlock Text="إدارة بيانات المتجر والعملة والمستخدمين" FontFamily="{StaticResource AppFont}"
+                           FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,6,0,0"/>
+            </StackPanel>
+
+            <!-- معلومات المتجر -->
+            <Border Grid.Row="1" Style="{StaticResource GlassCard}" Margin="0,20,0,0" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Text="معلومات المتجر" Style="{StaticResource SectionTitle}"/>
+
+                    <Grid Grid.Row="1" Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="اسم المتجر / الشركة" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                            <TextBox Text="{Binding CompanyName, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}" Height="44"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                            <TextBlock Text="العملة" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                            <TextBox Text="{Binding Currency, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}" Height="44"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Grid.Row="2" Margin="0,16,0,0" MaxWidth="320" HorizontalAlignment="Right">
+                        <TextBlock Text="الأجرة الافتراضية للصيانة" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding RepairDefaultFee, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource ModernTextBox}" Height="44"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="3" Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource PrimaryButton}" Height="44" Padding="24,0"
+                                HorizontalAlignment="Left" Command="{Binding SaveCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="حفظ الإعدادات" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   Foreground="{StaticResource SuccessBrush}" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" TextWrapping="Wrap"/>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- إقفال اليوم والاعتماد -->
+            <Border Grid.Row="2" Style="{StaticResource GlassCard}" Margin="0,24,0,0" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="إقفال اليوم (الاعتماد)" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="بعد الإقفال تُصبح فواتير اليوم وما قبله نهائية ولا يمكن تعديلها أو حذفها — التصحيح بعدها يتم بعمليات جديدة (استرجاع / Void / تسوية)."
+                                   FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding LastCloseDateText}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,12,0,0"/>
+                    </StackPanel>
+                    <Grid Grid.Row="1" Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource DangerButton}" Height="44" Padding="24,0"
+                                HorizontalAlignment="Left" Command="{Binding CloseDayCommand}"
+                                IsEnabled="{Binding CanCloseDay}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="إقفال اليوم الآن" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Grid.Column="1" Text="الإقفال متاح للمدير والمحاسب فقط"
+                                   FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        <Button Grid.Column="2" Style="{StaticResource ModernButton}" Height="44" Padding="20,0"
+                                Command="{Binding OpenOperationLogCommand}"
+                                IsEnabled="{Binding CanAudit}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock Text="سجل العمليات" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- النسخ الاحتياطي وسلامة البيانات -->
+            <Border Grid.Row="3" Style="{StaticResource GlassCard}" Margin="0,24,0,0" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="النسخ الاحتياطي وسلامة البيانات" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="خط الدفاع الأول ضد الحذف الخاطئ أو تلف القاعدة — مستقل تماماً عن المزامنة. كل نسخة تُفحص سلامتها قبل قبولها، ويُحتفظ بآخر 30 نسخة."
+                                   FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding BackupInfoText}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,12,0,0"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <Grid Grid.Row="1" Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource PrimaryButton}" Height="44" Padding="20,0"
+                                HorizontalAlignment="Left" Command="{Binding BackupNowCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock Text="نسخ احتياطي الآن" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Column="1" Style="{StaticResource DangerButton}" Height="44" Padding="20,0"
+                                Margin="12,0,0,0" HorizontalAlignment="Left"
+                                Command="{Binding RestoreBackupCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE8D1;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock Text="استعادة نسخة" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <TextBlock Grid.Column="2" Text="الاستعادة تُحفظ نسخة أمان من القاعدة الحالية وتتطلب إعادة تشغيل التطبيق — للمدير/المحاسب فقط."
+                                   FontFamily="{StaticResource AppFont}" FontSize="12"
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"
+                                   HorizontalAlignment="Right" Margin="16,0,0,0" TextWrapping="Wrap"/>
+                    </Grid>
+                    <TextBlock Grid.Row="2" Text="{Binding BackupStatus}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                               Foreground="{StaticResource SuccessBrush}" Margin="0,14,0,0"
+                               TextWrapping="Wrap"/>
+                </Grid>
+            </Border>
+
+            <!-- المزامنة والاقتران (الإطلاق المرحلي §11) -->
+            <Border Grid.Row="4" Style="{StaticResource GlassCard}" Margin="0,24,0,0" Padding="22"
+                    IsEnabled="{Binding CanEditPairing}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="المزامنة والاقتران (الخطة المرحلية §11)" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Text="{Binding DeviceIdText}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,6,0,0"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="الإعدادات تُكتب مباشرة في إعدادات القاعدة ولا تُمرَّر عبر الدلتا. دور الجهاز يُفعَّل بعد إعادة التشغيل — للمدير فقط."
+                                   FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBlock Text="دور الجهاز" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                            <ComboBox Style="{StaticResource ModernComboBox}" Height="44"
+                                      SelectedValuePath="Tag" SelectedValue="{Binding DeviceRole}">
+                                <ComboBoxItem Tag="MainServer" Content="الجهاز الرئيسي (MAIN)"/>
+                                <ComboBoxItem Tag="Cashier" Content="جهاز الكاشير"/>
+                                <ComboBoxItem Tag="Accessories" Content="جهاز الإكسسوارات"/>
+                                <ComboBoxItem Tag="Repair" Content="جهاز الصيانة"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="12,0,12,0">
+                            <TextBlock Text="منفذ المزامنة" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                            <TextBox Text="{Binding SyncPort, UpdateSourceTrigger=PropertyChanged}"
+                                     Style="{StaticResource ModernTextBox}" Height="44"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="12,0,0,0">
+                            <TextBlock Text="سرّ المزامنة (مشترك)" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                            <PasswordBox x:Name="SyncSecretPasswordBox" Height="44" PasswordChanged="SyncSecretPasswordBox_PasswordChanged"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                        <TextBlock Text="الأقران (host:port مفصولة بفواصل — كل جهاز يكتب بقية الأجهزة الراغب بها)"
+                                   FontFamily="{StaticResource AppFont}" FontSize="13"
+                                   Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding SyncPeers, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource ModernTextBox}" Height="44"
+                                 ToolTip="مثال: 192.168.1.10:45678, 192.168.1.11:45678"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- المستخدمون -->
+            <Border Grid.Row="5" Style="{StaticResource GlassCard}" Margin="0,24,0,0" Padding="22">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="المستخدمون" Style="{StaticResource SectionTitle}"/>
+                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Height="40" Padding="16,0"
+                                VerticalAlignment="Top" Command="{Binding ChangePasswordCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center"/>
+                                <TextBlock Text="تغيير كلمة مروري" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Margin="0,14,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.4*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="0.9*"/>
+                            <ColumnDefinition Width="1.2*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="المستخدم" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="الصلاحية" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="2" Text="الحالة" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Grid.Column="3" Text="الاسم الكامل" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" Margin="0,34,0,0" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Users}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="0,12" BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1.4*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="0.9*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Username}" FontFamily="{StaticResource AppFont}" FontSize="13.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Role}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                            <Border Grid.Column="2" Padding="12,4" CornerRadius="999" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                                <Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                                                <Setter Property="Background" Value="{StaticResource DangerBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding IsActive, Converter={StaticResource ActiveStatus}}" FontFamily="{StaticResource AppFont}" FontSize="11.5" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <TextBlock Grid.Column="3" Text="{Binding Phone}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

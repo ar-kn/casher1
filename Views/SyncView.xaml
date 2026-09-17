@@ -1,0 +1,244 @@
+<UserControl x:Class="PhoneAccounting.App.Views.SyncView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sync="clr-namespace:PhoneAccounting.App.Services.Sync"
+             FlowDirection="RightToLeft"
+             Background="{StaticResource GlassBgBrush}">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="28" MaxWidth="1200" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- ===== الترويسة: عنوان + هوية الجهاز + زر «زامن الآن» ===== -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="المزامنة" FontFamily="{StaticResource AppFont}"
+                                   FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Border Background="{StaticResource GlassTertiaryTintBrush}" CornerRadius="10"
+                                Padding="9,3" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="P3.0" FontFamily="{StaticResource AppFont}" FontSize="10.5"
+                                       Foreground="{StaticResource SuccessBrush}"/>
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="{Binding DeviceLabel}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                               Foreground="{StaticResource GlassOutlineBrush}" Margin="0,6,0,0"/>
+                    <TextBlock Text="{Binding LastSyncText}" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource ApplePrimaryButton}" Height="42"
+                            Command="{Binding SyncNowCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="15" VerticalAlignment="Center"/>
+                            <TextBlock Text="زامن الآن" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ===== حالة الأقران (استطلاع قراءة-فقط) ===== -->
+            <Border Grid.Row="1" Style="{StaticResource AppleGlassCard}" Padding="20" Margin="0,20,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="الأجهزة المرتبطة" FontFamily="{StaticResource AppFont}"
+                                   FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Text="تُتحدَّث الحالة بالاستطلاع كل بضع ثوانٍ — المصافحة فقط، لا كتابة" FontFamily="{StaticResource AppFont}"
+                                   FontSize="11.5" Foreground="{StaticResource GlassOutlineBrush}" Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" Margin="0,16,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.3*"/>
+                            <ColumnDefinition Width="0.7*"/>
+                            <ColumnDefinition Width="1.6*"/>
+                            <ColumnDefinition Width="0.8*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="الجهة" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                        <TextBlock Grid.Column="1" Text="الحالة" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                        <TextBlock Grid.Column="2" Text="التفاصيل" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                        <TextBlock Grid.Column="3" Text="آخر مشاهدة" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                    </Grid>
+
+                    <TextBlock Grid.Row="2" Text="لا أقران مضبوطة — تُضاف في الإعدادات بالتنسيق host:port"
+                               FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource GlassOutlineBrush}"
+                               HorizontalAlignment="Center" Margin="0,16,0,8"
+                               Visibility="{Binding Peers.Count, Converter={StaticResource EmptyVisibility}}"/>
+
+                    <ItemsControl Grid.Row="2" ItemsSource="{Binding Peers}"
+                                  Visibility="{Binding Peers.Count, Converter={StaticResource InverseEmptyVisibility}}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="0,11" BorderBrush="{StaticResource GlassSurfaceContainerHighBrush}"
+                                        BorderThickness="0,0,0,1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.3*"/>
+                                            <ColumnDefinition Width="0.7*"/>
+                                            <ColumnDefinition Width="1.6*"/>
+                                            <ColumnDefinition Width="0.8*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="&#xE968;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                                       Foreground="{StaticResource GlassPrimaryBrush}" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding DisplayName}" FontFamily="{StaticResource AppFont}"
+                                                       FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"
+                                                       Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <Border Grid.Column="1" CornerRadius="7" Padding="9,3" HorizontalAlignment="Left"
+                                                VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="{StaticResource GlassSurfaceContainerBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static sync:PeerHealthKind.Ok}">
+                                                            <Setter Property="Background" Value="{StaticResource GlassTertiaryTintBrush}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static sync:PeerHealthKind.Rejected}">
+                                                            <Setter Property="Background" Value="{StaticResource GlassErrorTintBrush}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static sync:PeerHealthKind.Unreachable}">
+                                                            <Setter Property="Background" Value="{StaticResource GlassSurfaceContainerHighBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding StatusText}" FontFamily="{StaticResource AppFont}" FontSize="11" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{StaticResource GlassOutlineBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static sync:PeerHealthKind.Ok}">
+                                                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding StatusKind}" Value="{x:Static sync:PeerHealthKind.Rejected}">
+                                                                <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Detail}" FontFamily="{StaticResource AppFont}"
+                                                       FontSize="12" Foreground="{StaticResource TextPrimaryBrush}"
+                                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding RemoteDevice, StringFormat='— {0}'}" FontFamily="{StaticResource AppFont}"
+                                                       FontSize="11" Foreground="{StaticResource GlassPrimaryBrush}"
+                                                       Margin="8,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+
+                                        <TextBlock Grid.Column="3" Text="{Binding LastSeen}" FontFamily="{StaticResource AppFont}"
+                                                   FontSize="11" Foreground="{StaticResource GlassOutlineBrush}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </Border>
+
+            <!-- ===== سجل الإيصالات: قائمة زمنية واحدة — فاشل ثم ناجح هي القصة ===== -->
+            <Border Grid.Row="2" Style="{StaticResource AppleGlassCard}" Padding="20" Margin="0,20,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="سجل الإيصالات" FontFamily="{StaticResource AppFont}"
+                                   FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <TextBlock Text="زمني واحد — الفاشل ثم الناجح متتاليان، لا تبويبات تخفي القصة" FontFamily="{StaticResource AppFont}"
+                                   FontSize="11.5" Foreground="{StaticResource GlassOutlineBrush}" Margin="0,3,0,0"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" Margin="0,16,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.55*"/>
+                            <ColumnDefinition Width="0.7*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="الزمن" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                        <TextBlock Grid.Column="1" Text="الجهة" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                        <TextBlock Grid.Column="2" Text="النتيجة" FontFamily="{StaticResource AppFont}" FontSize="11"
+                                   FontWeight="SemiBold" Foreground="{StaticResource GlassOutlineBrush}"/>
+                    </Grid>
+
+                    <TextBlock Grid.Row="2" Text="لا إيصالات بعد — اضغط «زامن الآن» وسترى كل محاولة فاشلة قبل الناجحة هنا"
+                               FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource GlassOutlineBrush}"
+                               HorizontalAlignment="Center" Margin="0,16,0,8"
+                               Visibility="{Binding Receipts.Count, Converter={StaticResource EmptyVisibility}}"/>
+
+                    <ScrollViewer Grid.Row="2" MaxHeight="320" VerticalScrollBarVisibility="Auto"
+                                  Visibility="{Binding Receipts.Count, Converter={StaticResource InverseEmptyVisibility}}">
+                        <ItemsControl ItemsSource="{Binding Receipts}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="0,10" BorderBrush="{StaticResource GlassSurfaceContainerHighBrush}"
+                                            BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="0.55*"/>
+                                                <ColumnDefinition Width="0.7*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding Time}" FontFamily="{StaticResource AppFont}"
+                                                       FontSize="12" Foreground="{StaticResource GlassOutlineBrush}" VerticalAlignment="Center"/>
+
+                                            <TextBlock Grid.Column="1" Text="{Binding Peer}" FontFamily="{StaticResource AppFont}"
+                                                       FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}"
+                                                       VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+
+                                            <TextBlock Grid.Column="2" FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                                                       VerticalAlignment="Center" TextWrapping="Wrap">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Success}" Value="True">
+                                                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                                <Run Text="{Binding Message}"/>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

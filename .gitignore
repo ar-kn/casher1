@@ -1,0 +1,25 @@
+﻿## ===== بنية / بناء =====
+**/bin/
+**/obj/
+*.user
+.vs/
+*.suo
+*.userosscache
+
+## ===== سرّ/بيانات حسّاسة لا تُرفع أبداً =====
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/*.bak
+**/*.key
+**/*.pfx
+**/*.p12
+appsettings.Local*.json
+secrets.json
+**/*.env
+**/.env
+
+## ===== نظام التشغيل والأدوات =====
+Thumbs.db
+Desktop.ini
+*.log

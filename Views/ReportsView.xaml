@@ -1,0 +1,482 @@
+<UserControl x:Class="PhoneAccounting.App.Views.ReportsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             Background="{StaticResource BgBrush}">
+    <UserControl.Resources>
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bd" Background="Transparent" CornerRadius="10"
+                                Padding="20,9" Margin="0,0,8,0">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource NavSelectedBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ReportGrid" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowHeight" Value="42"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="FontFamily" Value="{StaticResource AppFont}"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="MinColumnWidth" Value="110"/>
+            <Setter Property="AlternationCount" Value="2"/>
+            <Setter Property="RowStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Style.Triggers>
+                            <Trigger Property="AlternationIndex" Value="1">
+                                <Setter Property="Background" Value="#FAFAFC"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F0F5FF"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource NavSelectedBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ColumnHeaderStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="Background" Value="#F7F7F9"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                        <Setter Property="FontWeight" Value="SemiBold"/>
+                        <Setter Property="FontSize" Value="12.5"/>
+                        <Setter Property="Padding" Value="12,10"/>
+                        <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}"/>
+                        <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="CellStyle">
+                <Setter.Value>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Padding" Value="10,0"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="32">
+
+        <!-- ===== الترويسة ===== -->
+        <StackPanel>
+            <TextBlock Text="المحاسبة والتقارير" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="ملخص المبيعات والمشتريات والأرباح حسب الفترة والجهاز والموظف"
+                       FontFamily="{StaticResource AppFont}" FontSize="14"
+                       Foreground="{StaticResource TextSecondaryBrush}" Margin="0,6,0,0"/>
+        </StackPanel>
+
+        <!-- ===== الفلاتر ===== -->
+        <Border Style="{StaticResource Card}" Margin="0,20,0,0" Padding="22,18">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,16,0">
+                    <TextBlock Text="من تاريخ" FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                    <DatePicker Style="{StaticResource ModernDatePicker}" SelectedDate="{Binding FromDate}" Width="150"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="1">
+                    <TextBlock Text="إلى تاريخ" FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                    <DatePicker Style="{StaticResource ModernDatePicker}" SelectedDate="{Binding ToDate}" Width="150"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="2" Margin="16,0,0,0">
+                    <TextBlock Text="الجهاز" FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                    <ComboBox Style="{StaticResource ModernComboBox}" Width="170"
+                              ItemsSource="{Binding Devices}"
+                              SelectedItem="{Binding SelectedDevice}"
+                              DisplayMemberPath="Display"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="0" Grid.Column="3" Margin="16,0,0,0">
+                    <TextBlock Text="الموظف" FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                    <ComboBox Style="{StaticResource ModernComboBox}" Width="160"
+                              ItemsSource="{Binding Employees}"
+                              SelectedItem="{Binding SelectedEmployee}"
+                              DisplayMemberPath="Display"/>
+                </StackPanel>
+
+                <Button Grid.Row="0" Grid.Column="4" Margin="16,0,0,0"
+                        Style="{StaticResource PrimaryButton}" Height="40" VerticalAlignment="Bottom"
+                        Command="{Binding RefreshCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets"
+                                   FontSize="14" VerticalAlignment="Center"/>
+                        <TextBlock Text=" تحديث التقارير" FontFamily="{StaticResource AppFont}"
+                                   FontSize="14" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5"
+                           Text="{Binding PeriodText}" Margin="0,12,0,0"
+                           FontFamily="{StaticResource AppFont}" FontSize="12.5"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+            </Grid>
+        </Border>
+
+        <!-- ===== الملخص ===== -->
+        <UniformGrid Columns="6" Margin="0,16,0,0">
+
+            <Border Style="{StaticResource GlassCard}" Padding="16" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Width="38" Height="38" CornerRadius="10"
+                            Background="{StaticResource PrimaryContainerBrush}" HorizontalAlignment="Right">
+                        <TextBlock Text="&#xE7C1;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                   Foreground="{StaticResource OnPrimaryBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="إجمالي المبيعات" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,0"/>
+                    <TextBlock FontFamily="{StaticResource AppFont}" FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding SalesTotal, StringFormat={}{0:N0}, Mode=OneWay}"/><Run Text=" د.ع"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource GlassCard}" Padding="16" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Width="38" Height="38" CornerRadius="10"
+                            Background="{StaticResource TertiaryContainerBrush}" HorizontalAlignment="Right">
+                        <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                   Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="صافي الربح" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,0"/>
+                    <TextBlock FontFamily="{StaticResource AppFont}" FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource SuccessBrush}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding ProfitTotal, StringFormat={}{0:N0}, Mode=OneWay}"/><Run Text=" د.ع"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource GlassCard}" Padding="16" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Width="38" Height="38" CornerRadius="10"
+                            Background="{StaticResource SecondaryContainerBrush}" HorizontalAlignment="Right">
+                        <TextBlock Text="&#xE7D2;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                   Foreground="{StaticResource OnSecondaryContainerBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="إجمالي المشتريات" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,0"/>
+                    <TextBlock FontFamily="{StaticResource AppFont}" FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding PurchasesTotal, StringFormat={}{0:N0}, Mode=OneWay}"/><Run Text=" د.ع"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource GlassCard}" Padding="16" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Width="38" Height="38" CornerRadius="10"
+                            Background="{StaticResource SurfaceVariantBrush}" HorizontalAlignment="Right">
+                        <TextBlock Text="&#xE7D2;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="فواتير البيع" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding SalesCount}" FontFamily="{StaticResource AppFont}"
+                               FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource GlassCard}" Padding="16" Margin="0,0,10,0">
+                <StackPanel>
+                    <Border Width="38" Height="38" CornerRadius="10"
+                            Background="{StaticResource SurfaceVariantBrush}" HorizontalAlignment="Right">
+                        <TextBlock Text="&#xE7BF;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="فواتير الشراء" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding PurchasesCount}" FontFamily="{StaticResource AppFont}"
+                               FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource GlassCard}" Padding="16">
+                <StackPanel>
+                    <Border Width="38" Height="38" CornerRadius="10"
+                            Background="{StaticResource SurfaceVariantBrush}" HorizontalAlignment="Right">
+                        <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                   Foreground="{StaticResource AccentBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Text="إجمالي الخصومات" FontFamily="{StaticResource AppFont}" FontSize="12"
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,0"/>
+                    <TextBlock FontFamily="{StaticResource AppFont}" FontSize="17" FontWeight="Bold"
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,4,0,0" TextTrimming="CharacterEllipsis">
+                        <Run Text="{Binding DiscountTotal, StringFormat={}{0:N0}, Mode=OneWay}"/><Run Text=" د.ع"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- ===== التبويبات ===== -->
+        <Border Style="{StaticResource Card}" Padding="18,16" Margin="0,16,0,0">
+            <TabControl>
+                <TabItem Header="المبيعات">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="22,0,22,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.3*"/><ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.3*"/><ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.1*"/><ColumnDefinition Width="0.8*"/>
+                                <ColumnDefinition Width="0.6*"/><ColumnDefinition Width="0.9*"/>
+                                <ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="رقم الفاتورة" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="1" Text="التاريخ" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="2" Text="الزبون" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="3" Text="الكاشير" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="4" Text="الجهاز" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="5" Text="الدفع" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="6" Text="القطع" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="7" Text="الخصم" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="8" Text="الإجمالي" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="9" Text="الربح" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="460">
+                            <ItemsControl ItemsSource="{Binding Sales}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource AppleListRowBorder}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1.3*"/><ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="1.3*"/><ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="1.1*"/><ColumnDefinition Width="0.8*"/>
+                                                    <ColumnDefinition Width="0.6*"/><ColumnDefinition Width="0.9*"/>
+                                                    <ColumnDefinition Width="1.1*"/><ColumnDefinition Width="1.1*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding InvoiceNumber}" FontFamily="{StaticResource AppFont}" FontSize="13.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding DateText}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding CustomerName}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding CashierName}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="4" Text="{Binding DeviceText}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="5" Text="{Binding PaymentText}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="6" Text="{Binding ItemCount}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="7" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Discount, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                                <TextBlock Grid.Column="8" FontFamily="{StaticResource AppFont}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Total, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                                <TextBlock Grid.Column="9" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Profit, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="المشتريات">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="22,0,22,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.4*"/><ColumnDefinition Width="1.3*"/>
+                                <ColumnDefinition Width="1.5*"/><ColumnDefinition Width="1.3*"/>
+                                <ColumnDefinition Width="1.2*"/><ColumnDefinition Width="0.7*"/>
+                                <ColumnDefinition Width="1.2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="رقم الفاتورة" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="1" Text="التاريخ" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="2" Text="المورد" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="3" Text="الموظف" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="4" Text="الجهاز" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="5" Text="القطع" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="6" Text="الإجمالي" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="460">
+                            <ItemsControl ItemsSource="{Binding Purchases}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource AppleListRowBorder}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1.4*"/><ColumnDefinition Width="1.3*"/>
+                                                    <ColumnDefinition Width="1.5*"/><ColumnDefinition Width="1.3*"/>
+                                                    <ColumnDefinition Width="1.2*"/><ColumnDefinition Width="0.7*"/>
+                                                    <ColumnDefinition Width="1.2*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding InvoiceNumber}" FontFamily="{StaticResource AppFont}" FontSize="13.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding DateText}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding SupplierName}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding EmployeeName}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="4" Text="{Binding DeviceText}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="5" Text="{Binding ItemCount}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="6" FontFamily="{StaticResource AppFont}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Total, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="الأعلى مبيعاً">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="22,0,22,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.5*"/><ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.3*"/><ColumnDefinition Width="1.3*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="المنتج" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="1" Text="الكمية المبيعة" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="2" Text="الإيرادات" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="3" Text="الربح" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="460">
+                            <ItemsControl ItemsSource="{Binding TopProducts}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource AppleListRowBorder}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2.5*"/><ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="1.3*"/><ColumnDefinition Width="1.3*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding ProductName}" FontFamily="{StaticResource AppFont}" FontSize="13.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Quantity}" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Revenue, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                                <TextBlock Grid.Column="3" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Profit, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="الأرباح اليومية">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="22,0,22,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.8*"/><ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.2*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="اليوم" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="1" Text="المبيعات" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="2" Text="المشتريات" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="3" Text="ربح البيع" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            <TextBlock Grid.Column="4" Text="الصافي" FontFamily="{StaticResource AppFont}" FontSize="12.5" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </Grid>
+                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" MaxHeight="460">
+                            <ItemsControl ItemsSource="{Binding DailyProfits}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Style="{StaticResource AppleListRowBorder}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1.8*"/><ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="1.2*"/><ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="1.2*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding DayText}" FontFamily="{StaticResource AppFont}" FontSize="13.5" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Sales, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                                <TextBlock Grid.Column="2" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Purchases, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                                <TextBlock Grid.Column="3" FontFamily="{StaticResource AppFont}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Profit, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                                <TextBlock Grid.Column="4" FontFamily="{StaticResource AppFont}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"><Run Text="{Binding Net, StringFormat={}{0:N0}, Mode=OneWay}"/></TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Border>
+    </StackPanel>
+    </ScrollViewer>
+</UserControl>

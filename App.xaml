@@ -1,0 +1,54 @@
+<Application x:Class="PhoneAccounting.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:inf="clr-namespace:PhoneAccounting.App.Infrastructure">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Resources.xaml"/>
+                <ResourceDictionary Source="Themes/UiverseInspired.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <inf:InverseBooleanConverter x:Key="InverseBoolean"/>
+            <inf:ActiveStatusConverter x:Key="ActiveStatus"/>
+            <inf:LowStockColorConverter x:Key="LowStockColor"/>
+            <inf:EmptyVisibilityConverter x:Key="EmptyVisibility"/>
+            <inf:InverseEmptyVisibilityConverter x:Key="InverseEmptyVisibility"/>
+            <inf:BoolToVisibilityConverter x:Key="BoolToVisibility"/>
+            <inf:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibility"/>
+            <inf:ResultColorConverter x:Key="ResultColor"/>
+            <inf:BoolToBrushConverter x:Key="BoolToBrush"/>
+            <inf:StringToVisibilityConverter x:Key="StringToVisibility"/>
+            <inf:NotNullToVisibilityConverter x:Key="NotNullToVisibility"/>
+            <inf:NullToVisibilityConverter x:Key="NullToVisibility"/>
+            <inf:IntEqualsConverter x:Key="IntEquals"/>
+            <inf:HexToBrushConverter x:Key="HexToBrush"/>
+            <inf:InitialsConverter x:Key="Initials"/>
+            <inf:PercentToStarConverter x:Key="PercentToStar"/>
+            <inf:StatusToBrushConverter x:Key="StatusToBrush"/>
+            <inf:StatusToTintBrushConverter x:Key="StatusToTintBrush"/>
+            <inf:StringEqualsConverter x:Key="StringEquals"/>
+            <inf:GreaterThanZeroConverter x:Key="GreaterThanZero"/>
+
+            <!-- تحسينات عرض عامة على مستوى التطبيق: نص أوضح + محاذاة على البكسل (يقلل من ضبابية الصور) -->
+            <Style TargetType="Window">
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+            </Style>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+                <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+                <Setter Property="UseLayoutRounding" Value="True"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+
+            <Style TargetType="Image">
+                <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

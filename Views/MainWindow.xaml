@@ -1,0 +1,123 @@
+<Window x:Class="PhoneAccounting.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:PhoneAccounting.App.ViewModels"
+        Title="نظام المحاسبة"
+        Width="1360" Height="820"
+        MinWidth="1100" MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        FlowDirection="RightToLeft"
+        Background="{StaticResource BgBrush}"
+        SourceInitialized="Window_SourceInitialized">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="6"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ===== الشريط الجانبي الداكن ===== -->
+        <Border Grid.Column="0" Background="{StaticResource SidebarBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- أزرار التحكم بالنافذة -->
+                <Grid Grid.Row="0" Height="44">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0,0,0">
+                        <Button Content="&#xE921;" Style="{StaticResource IconButton}"
+                                Foreground="{StaticResource SidebarTextBrush}"
+                                Click="Minimize_Click" ToolTip="تصغير"/>
+                        <Button Content="&#xE739;" Style="{StaticResource IconButton}"
+                                Foreground="{StaticResource SidebarTextBrush}"
+                                Click="Maximize_Click" ToolTip="تكبير/استعادة"/>
+                        <Button Content="&#xE8BB;" Style="{StaticResource IconButton}"
+                                Foreground="{StaticResource SidebarTextBrush}"
+                                Click="Close_Click" ToolTip="إغلاق" x:Name="CloseButton"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ترويسة العلامة -->
+                <Border Grid.Row="1" Padding="22,14,22,18">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Border Width="46" Height="46" CornerRadius="23"
+                                Background="{StaticResource AccentBrush}">
+                            <TextBlock Text="&#xE8C9;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="22" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding CompanyName}"
+                                       FontFamily="{StaticResource AppFont}" FontWeight="Bold"
+                                       FontSize="16" Foreground="{StaticResource SidebarTextActiveBrush}"/>
+                            <TextBlock Text="نظام إدارة المبيعات"
+                                       FontFamily="{StaticResource AppFont}"
+                                       FontSize="11" Foreground="{StaticResource SidebarTextBrush}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- قائمة التنقل -->
+                <ListBox Grid.Row="2"
+                         ItemsSource="{Binding Items}"
+                         SelectedItem="{Binding SelectedItem}"
+                         ItemContainerStyle="{StaticResource SideNavItem}"
+                         Background="Transparent" BorderThickness="0"
+                         Margin="12,6,12,6"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         x:Name="NavList"/>
+
+                <!-- بطاقة المستخدم + تسجيل الخروج -->
+                <Border Grid.Row="3" Margin="16,10,16,18"
+                        Padding="14,12" CornerRadius="14"
+                        Background="#13243B">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Width="38" Height="38" CornerRadius="19"
+                                Background="{StaticResource AccentBrush}">
+                            <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="16" Foreground="White"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding DisplayName}"
+                                       FontFamily="{StaticResource AppFont}" FontWeight="SemiBold" FontSize="13"
+                                       Foreground="{StaticResource SidebarTextActiveBrush}"/>
+                            <TextBlock Text="{Binding RoleTitle}"
+                                       FontFamily="{StaticResource AppFont}" FontSize="11"
+                                       Foreground="{StaticResource SidebarTextBrush}"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="2" Style="{StaticResource IconButton}"
+                                Foreground="{StaticResource SidebarTextBrush}"
+                                Content="&#xE7E8;" Click="Logout_Click"
+                                ToolTip="تسجيل الخروج" FontSize="14"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ===== المحتوى ===== -->
+        <Grid Grid.Column="1">
+            <ContentControl Content="{Binding SelectedItem.Content}"/>
+        </Grid>
+    </Grid>
+</Window>
