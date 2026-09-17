@@ -7,9 +7,9 @@
 *.userosscache
 
 ## ===== سرّ/بيانات حسّاسة لا تُرفع أبداً =====
-**/*.db
-**/*.sqlite
-**/*.sqlite3
+**/*.db*
+**/*.sqlite*
+**/*.sqlite3*
 **/*.bak
 **/*.key
 **/*.pfx
