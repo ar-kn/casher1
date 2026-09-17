@@ -674,10 +674,10 @@
                                     <ColumnDefinition Width="8"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Content="حفظ الفاتورة" Style="{StaticResource PosPrimaryButton}"
-                                        Command="{Binding SaveSaleCommand}"/>
-                                <Button Grid.Column="2" Content="حفظ وطباعة" Style="{StaticResource PosPrimaryButton}"
-                                        Command="{Binding SaveAndPrintSaleCommand}"/>
+<Button Grid.Column="0" Content="حفظ الفاتورة" Style="{StaticResource UiverseNeonButton}"
+                                Command="{Binding SaveSaleCommand}"/>
+                        <Button Grid.Column="2" Content="حفظ وطباعة" Style="{StaticResource UiverseNeonButton}"
+                                Command="{Binding SaveAndPrintSaleCommand}"/>
                             </Grid>
 
                             <Button Margin="0,8,0,0" Content="طباعة الفاتورة الأخيرة" Style="{StaticResource PosGhostButton}"

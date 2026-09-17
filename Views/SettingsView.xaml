@@ -134,6 +134,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
                         <TextBlock Text="النسخ الاحتياطي وسلامة البيانات" Style="{StaticResource SectionTitle}"/>
@@ -145,7 +146,40 @@
                                    FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}" Margin="0,12,0,0"
                                    TextWrapping="Wrap"/>
                     </StackPanel>
+
+                    <!-- مفاتيح التبديل الزجاجية (UiverseGlassToggle) -->
                     <Grid Grid.Row="1" Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="نسخ احتياطي تلقائي عند الإقلاع"
+                                   FontFamily="{StaticResource AppFont}" FontSize="13" VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,16,0"/>
+                        <ToggleButton Grid.Row="0" Grid.Column="2" IsChecked="{Binding AutoBackupOnStartup}"
+                                      Style="{StaticResource UiverseGlassToggle}"/>
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="تفعيل المزامنة بين الأجهزة"
+                                   FontFamily="{StaticResource AppFont}" FontSize="13" VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,12,16,0"/>
+                        <ToggleButton Grid.Row="1" Grid.Column="2" IsChecked="{Binding EnableSync}"
+                                      Style="{StaticResource UiverseGlassToggle}"/>
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="إظهار الربح في نقطة البيع"
+                                   FontFamily="{StaticResource AppFont}" FontSize="13" VerticalAlignment="Center"
+                                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,12,16,0"/>
+                        <ToggleButton Grid.Row="2" Grid.Column="2" IsChecked="{Binding ShowProfitInPos}"
+                                      Style="{StaticResource UiverseGlassToggle}"/>
+                    </Grid>
+
+                    <Grid Grid.Row="2" Margin="0,16,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
@@ -171,9 +205,9 @@
                                    Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"
                                    HorizontalAlignment="Right" Margin="16,0,0,0" TextWrapping="Wrap"/>
                     </Grid>
-                    <TextBlock Grid.Row="2" Text="{Binding BackupStatus}" FontFamily="{StaticResource AppFont}" FontSize="13"
-                               Foreground="{StaticResource SuccessBrush}" Margin="0,14,0,0"
-                               TextWrapping="Wrap"/>
+<TextBlock Grid.Row="3" Text="{Binding BackupStatus}" FontFamily="{StaticResource AppFont}" FontSize="13"
+                                Foreground="{StaticResource SuccessBrush}" Margin="0,14,0,0"
+                                TextWrapping="Wrap"/>
                 </Grid>
             </Border>
 

@@ -65,6 +65,21 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _backupStatus = "";
 
+    [ObservableProperty]
+    private bool _autoBackupOnStartup = Database.GetSetting("AutoBackupOnStartup", "True") == "True";
+
+    [ObservableProperty]
+    private bool _enableSync = Database.GetSetting("EnableSync", "False") == "True";
+
+    [ObservableProperty]
+    private bool _showProfitInPos = Database.GetSetting("ShowProfitInPos", "True") == "True";
+
+    partial void OnAutoBackupOnStartupChanged(bool value) => Database.SetSetting("AutoBackupOnStartup", value ? "True" : "False");
+
+    partial void OnEnableSyncChanged(bool value) => Database.SetSetting("EnableSync", value ? "True" : "False");
+
+    partial void OnShowProfitInPosChanged(bool value) => Database.SetSetting("ShowProfitInPos", value ? "True" : "False");
+
     public string BackupInfoText
     {
         get
