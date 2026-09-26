@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         FlowDirection="RightToLeft"
-        Background="{StaticResource GlassBgColor}"
+        Background="{StaticResource GlassBgBrush}"
         SourceInitialized="Window_SourceInitialized">
 
     <WindowChrome.WindowChrome>
